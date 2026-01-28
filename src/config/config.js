@@ -3,6 +3,7 @@ dotenvConfig()
 
 
 const _config = {
+    PORT: process.env.PORT,
     RABBITMQ_URI: process.env.RABBITMQ_URI,
     JWT_SECRET: process.env.JWT_SECRET
 

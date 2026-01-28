@@ -5,6 +5,17 @@ import * as  notificationController from '../controllers/notification.controller
 
 const router = express.Router()
 
+/* ======================
+   HEALTH CHECK (NEW)
+====================== */
+router.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    service: "notification",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 
 
 router.post('/send-forget-password-otp',notificationController.sendForgotPasswordEmail)

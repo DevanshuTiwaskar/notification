@@ -1,16 +1,16 @@
-import { connect } from '../auth/src/broker/rabbit.js'
-import listner from './src/broker/listner.js'
+import { connect } from './src/broker/Rabbit.js'
+import listener from './src/broker/listner.js'
 import app from './src/app.js'
-
+import config from './src/config/config.js';
 
 (async () => {
-  await connect(); // make sure channel is ready
-  listner();      // now you can subscribe safely
+  await connect();   // connect to RabbitMQ
+  listener();        // start consuming messages
 })();
 
+const PORT = config.PORT || 4001
 
-const PORT = process.env.PORT || 4001
 
-app.listen(PORT,()=>{
-    console.log(`🔥Notification server is running on port: ${PORT}`)
-})
+app.listen(PORT, () => {
+  console.log(`🔥 Notification server is running on port: ${PORT}`);
+});
