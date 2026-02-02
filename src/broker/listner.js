@@ -1,18 +1,33 @@
-import { subscribrQueue } from './Rabbit.js'
-import sendEmail from '../utils/email.js'
-
+import { consumeEvents } from "./Rabbit.js";
+import sendEmail from "../utils/email.js";
 
 export default () => {
+  consumeEvents(async (message, routingKey) => {
+    console.log("📩 Event:", routingKey, message);
 
-    subscribrQueue('AUTHENTICATION_NOTIFICATION_USER.REGISTERED',async(message) => {
-        console.log(message)
-         const template = `
-        <h1>Welcome to our platform, ${message.fullName}!</h1>
-        <p>Thank you for registering with us. We're excited to have you on board.</p>
-        <p>Your username is: <strong>${message.username}</strong></p>
-        <p>If you have any questions or need assistance, feel free to reach out to our support team.</p>
-        <p>Best regards,<br/>The Team</p>
-        `;
-        await sendEmail(message.email, "Welcome to Our Platform!", "Thank you for registering with us.", template)
-    })
-}
+    // Welcome Email
+    if (routingKey === "user.registered") {
+      await sendEmail(
+        message.email,
+        "Welcome to Music Player",
+        "Welcome!",
+        `<h1>Welcome ${message.fullName}</h1>
+         <p>Your username: <b>${message.username}</b></p>`
+      );
+    }
+
+    // Forgot Password OTP
+    if (routingKey === "user.forgot_password") {
+      await sendEmail(
+        message.email,
+        "Password Reset OTP",
+        `Your OTP is ${message.otp}`,
+        `<h2>Your OTP: ${message.otp}</h2>`
+      );
+
+      console.log("✅ OTP email sent");
+    } else {
+      console.log("❓ No handler for routing key:", routingKey);
+    }
+  });
+};
